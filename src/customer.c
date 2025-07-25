@@ -5,7 +5,8 @@ int accountExists(Customer *customers, long int accountNumber)
     Customer *current = customers;
     while (current)
     {
-        if (current->account_number == accountNumber) return 1;
+        if (current->account_number == accountNumber)
+            return 1;
         current = current->next;
     }
     return 0;
@@ -18,7 +19,8 @@ long int accountGenerate(Customer *customers)
     do
     {
         accountNumber = 626001;
-        for (int i = 0; i < 10; i++) accountNumber = accountNumber * 10 + (rand() % 10);
+        for (int i = 0; i < 10; i++)
+            accountNumber = accountNumber * 10 + (rand() % 10);
     } while (accountExists(customers, accountNumber));
 
     return accountNumber;
@@ -28,20 +30,19 @@ int generate_pin()
 {
     srand(time(0) + rand());
     int pin = 0;
-    for (int i = 0; i < 4; i++) pin = pin * 10 + (rand() % 10);
+    for (int i = 0; i < 4; i++)
+        pin = pin * 10 + (rand() % 10);
     return pin;
 }
 
 void create_account(Customer **customers)
 {
-    //system("clear");
     Customer *newAccount = (Customer *)malloc(sizeof(Customer));
     if (!newAccount)
     {
         perror("Memory allocation failed");
         exit(EXIT_FAILURE);
     }
-    newAccount->next = NULL;
 
     newAccount->account_number = accountGenerate(*customers);
     newAccount->pin = generate_pin();
@@ -64,8 +65,10 @@ void create_account(Customer **customers)
     scanf(" %c", &type);
     newAccount->type = type;
 
-    if (type == 'S' || type == 's') newAccount->type = SAVINGS;
-    else if (type == 'C' || type == 'c') newAccount->type = CURRENT;
+    if (type == 'S' || type == 's')
+        newAccount->type = SAVINGS;
+    else if (type == 'C' || type == 'c')
+        newAccount->type = CURRENT;
     else
     {
         printf("Invalid account type. Defaulting to SAVINGS.\n");
@@ -84,17 +87,23 @@ void create_account(Customer **customers)
 
     newAccount->opening_date = time(NULL);
 
-    if (!*customers) *customers = newAccount;
+    if (!*customers)
+    {
+        newAccount->next = *customers;
+        *customers = newAccount;
+    }
     else
     {
         Customer *current = *customers;
-        while (current->next) current = current->next;
+        while (current->next)
+            current = current->next;
+
+        newAccount->next = current->next;
         current->next = newAccount;
     }
 
-    // system("clear");
+    system("clear");
 
     printf("Account created successfully!\n");
     print_account_details(newAccount);
-
 }

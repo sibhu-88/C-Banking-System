@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <ctype.h>
 
 typedef enum
 {
@@ -16,6 +17,17 @@ typedef enum
     WITHDRAWAL
 } TransactionType;
 
+typedef struct Transaction
+{
+    long int transaction_id;
+    long int account_number;
+    TransactionType type;
+    double amount;
+    double balance_after;
+    time_t timestamp;
+    struct Transaction *next;
+} Transaction;
+
 typedef struct Customer
 {
     long int account_number;
@@ -28,22 +40,19 @@ typedef struct Customer
     double balance;
     time_t dob;
     time_t opening_date;
+    Transaction transactionHistory;
     struct Customer *next;
 } Customer;
 
-typedef struct Transaction
-{
-    long int transaction_id;
-    long int account_number;
-    TransactionType type;
-    double amount;
-    double balance_after;
-    time_t timestamp;
-    struct Transaction *next;
-} Transaction;
-
 void main_menu(void);
+void update_account_menu(void);
 
 void create_account(Customer **customers);
 void view_all_account_details(Customer *customers);
 void print_account_details(Customer *customer);
+void view_account_details(Customer *customers);
+void update_account(Customer **customers);
+void delete_account(Customer **customers);
+
+void deposit_money(Customer **customers);
+void withdraw_money(Customer **customers);

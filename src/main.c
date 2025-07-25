@@ -1,6 +1,5 @@
 #include "banking.h"
 
-
 int main()
 {
     int option;
@@ -8,7 +7,7 @@ int main()
 
     do
     {
-       // system("clear");
+       system("clear");
 
         printf("\tWelcome to Banking System\n");
         main_menu();
@@ -18,29 +17,34 @@ int main()
         switch (option)
         {
         case 1:
+            system("clear");
             create_account(&customers);
             sleep(2);
             break;
         case 2:
-            // update_account();
+            system("clear");
+            update_account(&customers);
             break;
         case 3:
-            // delete_account();
+            system("clear");
+            delete_account(&customers);
             break;
         case 4:
-            // search_account();
+            system("clear");
+            view_account_details(customers);
             break;
         case 5:
-            // deposit_money();
+            deposit_money(&customers);
             break;
         case 6:
-            // withdraw_money();
+            withdraw_money();
             break;
         case 7:
+            system("clear");
             view_all_account_details(customers);
             break;
         case 8:
-            // view_account_details();
+            
             break;
         case 9:
             // save_account_details();
@@ -62,13 +66,28 @@ void main_menu(void)
     printf("\t| 1. Create New Account            |\n");
     printf("\t| 2. Update Account Details        |\n");
     printf("\t| 3. Delete Account                |\n");
-    printf("\t| 4. Search Account                |\n");
+    printf("\t| 4. View A Account Details        |\n");
     printf("\t| 5. Deposit Money                 |\n");
     printf("\t| 6. Withdraw Money                |\n");
     printf("\t| 7. View All Account Details      |\n");
-    printf("\t| 8. View Account Details          |\n");
+    printf("\t| 8. Transaction History           |\n");
     printf("\t| 9. Save The Account Details      |\n");
     printf("\t| 0. Exit                          |\n");
+    printf("\t+----------------------------------+\n");
+    printf("\n\tEnter your choice: ");
+}
+
+void update_account_menu(void) {
+    printf("\n\n\t----------------------------------+\n");
+    printf("\t| Update Account Menu             |\n");
+    printf("\t|----------------------------------|\n");
+    printf("\t| 1. Update Customer Name         |\n");
+    printf("\t| 2. Update Address                |\n");
+    printf("\t| 3. Update Phone Number           |\n");
+    printf("\t| 4. Update Email                  |\n");
+    printf("\t| 5. Update Date of Birth          |\n");
+    printf("\t| 6. Update Account Type           |\n");
+    printf("\t| 0. Return to Main Menu           |\n");
     printf("\t+----------------------------------+\n");
     printf("\n\tEnter your choice: ");
 }
