@@ -12,6 +12,35 @@ int accountExists(Customer *customers, long int accountNumber)
     return 0;
 }
 
+int transactionExists(Customer *customers, long int transactionId)
+{
+    Customer *current = customers;
+    while (current)
+    {
+        while (current->transactionHistory)
+        {
+            if (current->transactionHistory->transaction_id == transactionId)
+                return 1;
+            current->transactionHistory = current->transactionHistory->next;
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+long int generate_transactionId(Customer *customers)
+{
+    srand(time(0));
+    long int transactionId;
+    do
+    {
+        transactionId = 0;
+        for (int i = 0; i < 10; i++)
+            transactionId = transactionId * 10 + (rand() % 10);
+    } while (accountExists(customers, transactionId));
+    return transactionId;
+}
+
 long int accountGenerate(Customer *customers)
 {
     srand(time(0));
@@ -86,6 +115,16 @@ void create_account(Customer **customers)
     newAccount->dob = mktime(&tm);
 
     newAccount->opening_date = time(NULL);
+
+    Transaction *transactionHistory = (Transaction *)malloc(sizeof(Transaction));
+    transactionHistory->transaction_id = generate_transactionId(customers);
+    transactionHistory->timestamp = time(NULL);
+    transactionHistory->type = DEPOSIT;
+    transactionHistory->amount = newAccount->balance;
+    transactionHistory->balance_after = newAccount->balance;
+    transactionHistory->next = NULL;
+
+    newAccount->transactionHistory = transactionHistory;
 
     if (!*customers)
     {

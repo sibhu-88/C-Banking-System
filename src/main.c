@@ -37,7 +37,7 @@ int main()
             deposit_money(&customers);
             break;
         case 6:
-            withdraw_money();
+            withdraw_money(&customers);
             break;
         case 7:
             system("clear");

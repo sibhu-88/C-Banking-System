@@ -40,7 +40,7 @@ typedef struct Customer
     double balance;
     time_t dob;
     time_t opening_date;
-    Transaction transactionHistory;
+    Transaction *transactionHistory;
     struct Customer *next;
 } Customer;
 

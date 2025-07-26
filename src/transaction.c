@@ -1,7 +1,9 @@
 #include "banking.h"
 
-void deposit_money(Customer **customers) {
-    if (!*customers) {
+void deposit_money(Customer **customers)
+{
+    if (!*customers)
+    {
         fprintf(stderr, "Error: No Records Found!...\n");
         sleep(2);
         return;
@@ -17,8 +19,10 @@ void deposit_money(Customer **customers) {
     scanf("%d", &pin);
 
     Customer *current = *customers;
-    while (current != NULL) {
-        if (current->account_number == accNo && current->pin == pin) {
+    while (current != NULL)
+    {
+        if (current->account_number == accNo && current->pin == pin)
+        {
             found = 1;
             print_account_details(current);
             break;
@@ -26,28 +30,48 @@ void deposit_money(Customer **customers) {
         current = current->next;
     }
 
-    if (!found) {
+    if (!found)
+    {
         fprintf(stderr, "Error: No Records Found!...\n");
         sleep(2);
         return;
-    } else {
+    }
+    else
+    {
         double deposit;
         printf("Enter The Amount For Deposit: ");
         scanf("%lf", &deposit);
 
-        if (deposit <= 0) {
+        if (deposit <= 0)
+        {
             printf("Error: Deposit amount must be greater than zero.\n");
             return;
         }
 
         current->balance += deposit;
+        Transaction *transactionHistory = (Transaction *)malloc(sizeof(Transaction));
+        transactionHistory->transaction_id = generate_transactionId(current);
+        transactionHistory->timestamp = time(NULL);
+        transactionHistory->type = DEPOSIT;
+        transactionHistory->amount = deposit;
+        transactionHistory->balance_after = current->balance;
+        transactionHistory->next = NULL;
+
+        while (current->transactionHistory != NULL)
+        {
+            current->transactionHistory = current->transactionHistory->next;
+        }
+        current->transactionHistory->next = transactionHistory;
+
         printf("Success: Amount deposited successfully.\n");
         printf("Available balance: %.2lf\n", current->balance);
     }
 }
 
-void withdraw_money(Customer **customers) {
-    if (!*customers) {
+void withdraw_money(Customer **customers)
+{
+    if (!*customers)
+    {
         fprintf(stderr, "Error: No Records Found!...\n");
         sleep(2);
         return;
@@ -63,34 +87,54 @@ void withdraw_money(Customer **customers) {
     scanf("%d", &pin);
 
     Customer *current = *customers;
-    while (current != NULL) {
-        if (current->account_number == accNo && current->pin == pin) {
+    while (current != NULL)
+    {
+        if (current->account_number == accNo && current->pin == pin)
+        {
             found = 1;
-            print_account_details(current); 
+            print_account_details(current);
         }
         current = current->next;
     }
 
-    if (!found) {
+    if (!found)
+    {
         fprintf(stderr, "Error: No Records Found!...\n");
         sleep(2);
         return;
-    } else {
+    }
+    else
+    {
         double withdraw;
         printf("Enter The Amount For Withdrawal: ");
         scanf("%lf", &withdraw);
 
-        // Validate withdrawal amount
-        if (withdraw <= 0) {
+        if (withdraw <= 0)
+        {
             printf("Error: Withdrawal amount must be greater than zero.\n");
             return;
         }
-        if (current->balance < withdraw) {
+        if (current->balance < withdraw)
+        {
             printf("Error: Insufficient funds. Available balance: %.2lf\n", current->balance);
             return;
         }
 
         current->balance -= withdraw;
+        Transaction *transactionHistory = (Transaction *)malloc(sizeof(Transaction));
+        transactionHistory->transaction_id = generate_transactionId(current);
+        transactionHistory->timestamp = time(NULL);
+        transactionHistory->type = WITHDRAWAL;
+        transactionHistory->amount = withdraw;
+        transactionHistory->balance_after = current->balance;
+        transactionHistory->next = NULL;
+
+        while (current->transactionHistory != NULL)
+        {
+            current->transactionHistory = current->transactionHistory->next;
+        }
+        current->transactionHistory->next = transactionHistory;
+        
         printf("Success: Amount withdrawn successfully.\n");
         printf("Available balance: %.2lf\n", current->balance);
     }

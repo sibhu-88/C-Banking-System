@@ -1,32 +1,29 @@
-# Compiler and flags
 CC = gcc
-INCLUDES = -Iinclude
-LDFLAGS = 
-
-# Source files
+CFLAGS = -Wall -Wextra -std=c11 -g
+LDFLAGS =
+INCLUDE_DIR = include
 SRC_DIR = src
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:.c=.o)
+BIN_DIR = . # Or a 'bin' directory if you prefer
 
-# Executable name
-TARGET = bankmgmt
+SRCS = $(SRC_DIR)/main.c \
+       $(SRC_DIR)/accounts.c \
+       $(SRC_DIR)/customer.c \
+       $(SRC_DIR)/list.c \
+       $(SRC_DIR)/transaction.c
 
-# Default build target
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(SRCS))
+
+TARGET = $(BIN_DIR)/bankmgmt
+
+.PHONY: all clean
+
 all: $(TARGET)
 
-# Build the executable
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) $^ -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
-# Create object files
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-run: $(TARGET)
-	@echo "Starting banking management system..."
-	@./$(TARGET)
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(TARGET)
-
-.PHONY: all run clean
