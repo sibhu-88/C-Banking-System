@@ -19,7 +19,7 @@ typedef enum
 
 typedef struct Transaction
 {
-    long int transaction_id;
+    unsigned long int transaction_id;
     long int account_number;
     TransactionType type;
     double amount;
@@ -30,7 +30,7 @@ typedef struct Transaction
 
 typedef struct Customer
 {
-    long int account_number;
+    unsigned long int account_number;
     int pin;
     char holder_name[50];
     char holder_address[100];
@@ -48,11 +48,14 @@ void main_menu(void);
 void update_account_menu(void);
 
 void create_account(Customer **customers);
-void view_all_account_details(Customer *customers);
-void print_account_details(Customer *customer);
-void view_account_details(Customer *customers);
 void update_account(Customer **customers);
 void delete_account(Customer **customers);
-
+void view_account_details(Customer *customers);
 void deposit_money(Customer **customers);
 void withdraw_money(Customer **customers);
+void view_all_account_details(Customer *customers);
+void transactionHistory(Customer *customers); 
+void save_account_details(Customer *customers);
+
+void print_account_details(Customer *customer);
+

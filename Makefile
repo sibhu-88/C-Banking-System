@@ -1,29 +1,32 @@
+# Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
-LDFLAGS =
-INCLUDE_DIR = include
-SRC_DIR = src
-BIN_DIR = . # Or a 'bin' directory if you prefer
+CFLAGS = -Iinclude
+LDFLAGS = 
 
-SRCS = $(SRC_DIR)/main.c \
-       $(SRC_DIR)/accounts.c \
-       $(SRC_DIR)/customer.c \
-       $(SRC_DIR)/list.c \
-       $(SRC_DIR)/transaction.c
+# Source files
+SRCS = $(wildcard src/*.c)
+OBJS = $(SRCS:.c=.o)
 
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(SRCS))
+# Main executable
+TARGET = bankmgmt
 
-TARGET = $(BIN_DIR)/bankmgmt
-
-.PHONY: all clean
-
+# Default target
 all: $(TARGET)
 
+# Main executable
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
-$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $@
+# Object files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+# Clean build artifacts
 clean:
 	rm -f $(OBJS) $(TARGET)
+
+# Run the program
+run: $(TARGET)
+	./$(TARGET)
+
+.PHONY: all clean

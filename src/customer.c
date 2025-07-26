@@ -17,34 +17,38 @@ int transactionExists(Customer *customers, long int transactionId)
     Customer *current = customers;
     while (current)
     {
-        while (current->transactionHistory)
+        Transaction *trans = current->transactionHistory;
+        while (trans)
         {
-            if (current->transactionHistory->transaction_id == transactionId)
+            if (trans->transaction_id == transactionId)
+            {
                 return 1;
-            current->transactionHistory = current->transactionHistory->next;
+            }
+            trans = trans->next;
         }
         current = current->next;
     }
-    return 0;
+    return 0; // Transaction does not exist
 }
 
-long int generate_transactionId(Customer *customers)
+unsigned long int generate_transactionId(Customer *customers)
 {
-    srand(time(0));
-    long int transactionId;
+    unsigned long int transactionId;
+
     do
     {
-        transactionId = 0;
-        for (int i = 0; i < 10; i++)
+        transactionId = (rand() % 9) + 1; // First digit 1-9 (to avoid leading zeros)
+        for (int i = 1; i < 10; i++)
             transactionId = transactionId * 10 + (rand() % 10);
     } while (accountExists(customers, transactionId));
+
     return transactionId;
 }
 
-long int accountGenerate(Customer *customers)
+unsigned long int accountGenerate(Customer *customers)
 {
     srand(time(0));
-    long int accountNumber;
+    unsigned long int accountNumber;
     do
     {
         accountNumber = 626001;
@@ -55,17 +59,9 @@ long int accountGenerate(Customer *customers)
     return accountNumber;
 }
 
-int generate_pin()
-{
-    srand(time(0) + rand());
-    int pin = 0;
-    for (int i = 0; i < 4; i++)
-        pin = pin * 10 + (rand() % 10);
-    return pin;
-}
-
 void create_account(Customer **customers)
 {
+    srand(time(0) + rand());
     Customer *newAccount = (Customer *)malloc(sizeof(Customer));
     if (!newAccount)
     {
@@ -74,7 +70,7 @@ void create_account(Customer **customers)
     }
 
     newAccount->account_number = accountGenerate(*customers);
-    newAccount->pin = generate_pin();
+    newAccount->pin = (rand() % 9000) + 1000;
 
     printf("\nCustomer Details::\n");
     printf("Customer Name : ");

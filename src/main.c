@@ -34,9 +34,11 @@ int main()
             view_account_details(customers);
             break;
         case 5:
+            system("clear");
             deposit_money(&customers);
             break;
         case 6:
+            system("clear");
             withdraw_money(&customers);
             break;
         case 7:
@@ -44,13 +46,16 @@ int main()
             view_all_account_details(customers);
             break;
         case 8:
-            
+            system("clear");
+            transactionHistory(customers); 
             break;
         case 9:
-            // save_account_details();
+            system("clear");
+            save_account_details(customers);
             break;
         case 0:
             printf("Exiting the program...\n");
+            save_account_details(customers);
             exit(0);
         default:
             printf("Invalid choice! Please try again.\n");
