@@ -1,81 +1,119 @@
----
-
-```markdown
 # 💰 C Banking System
 
-A simple command-line banking system developed in C that allows users to manage customer accounts, perform transactions, and save data using structured programming principles.
+A modular C-based Banking Management System designed for educational purposes. This command-line interface program allows users to manage bank accounts, perform transactions, and persist data using file I/O.
 
-## 📂 Project Structure
+---
 
-```
+## 📁 Project Files
 
-.
-├── accounts.c       # Functions to manage account creation, deletion, and modification
-├── customer.c       # Customer information and handling logic
-├── list.c           # Linked list implementation for dynamic record management
-├── main.c           # Entry point of the program with user interaction menu
-├── save.c           # Save/load functionality for data persistence
-├── transaction.c    # Deposit and withdrawal functionality
-├── banking.h        # Header file with function prototypes and struct definitions
+| File Name       | Description |
+|----------------|-------------|
+| `main.c`        | Main entry point, user interaction and menu navigation |
+| `accounts.c`    | Create, delete, and manage account-related operations |
+| `customer.c`    | Handle customer details and verification |
+| `list.c`        | Linked list implementation for dynamic customer records |
+| `transaction.c` | Perform deposit and withdrawal operations |
+| `save.c`        | Load and save data to/from file storage |
+| `banking.h`     | Header file with struct definitions and function prototypes |
 
-````
+---
 
 ## 🔧 Features
 
-- Add new customer accounts
-- Deposit and withdraw money
-- View customer list
-- Save and load data from file
-- Linked list-based dynamic memory management
-- Modular file separation for better maintenance
+- Add, delete, and modify customer accounts
+- Deposit and withdraw functionality
+- Linked list implementation for storing customer records
+- Data persistence using files
+- Modular structure for easier maintenance
 
-## 🛠️ Compilation
+---
 
-Use the following `Makefile` or compile manually:
+## 🛠️ How to Compile
 
-### Compile with `gcc`:
+Use `gcc` to compile all the `.c` files together:
+
 ```bash
 gcc main.c accounts.c customer.c list.c transaction.c save.c -o banking
-````
+```
 
-### Run:
+Or use a `Makefile`:
+
+```makefile
+CC = gcc
+CFLAGS = -Wall
+SRC = main.c accounts.c customer.c list.c transaction.c save.c
+OBJ = $(SRC:.c=.o)
+TARGET = banking
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CC) -o $@ $^
+
+clean:
+	rm -f *.o $(TARGET)
+```
+
+Run the program:
 
 ```bash
 ./banking
 ```
 
-## 🧾 Data Handling
+---
 
-* All customer records are stored in a linked list.
-* Persistent storage is achieved using file I/O.
-* Data is saved before program exits and loaded at startup.
+## 💾 Data Storage
 
-## 🔐 Account Information
+- Customer and account data are stored in memory during runtime using linked lists.
+- Data is written to and read from a file (`.dat` or `.txt`) to persist between runs.
 
-Each account holds:
+---
 
-* Customer name and ID
-* Account number
-* Balance
-* Transaction history
+## 🧍 Customer Information Includes
 
-## 📚 Dependencies
+- Customer Name
+- Account Number
+- ID/Proof
+- Balance
+- Transaction history
 
-* Standard C Library (no external dependencies)
-* Works on Linux/GCC-compatible systems
+---
+
+## 📚 Learning Objectives
+
+This project helps reinforce:
+- C programming structure
+- File handling (read/write)
+- Linked lists
+- Modular programming
+- Function pointers and struct usage
+
+---
 
 ## 🚀 Getting Started
 
-1. Clone or download this repository.
-2. Compile using the provided instructions.
-3. Run the executable to manage bank records interactively.
+1. Clone or download the files.
+2. Compile using `gcc` or a `Makefile`.
+3. Run the `./banking` binary and follow the interactive menu.
+4. Use options to add, modify, list, and delete customers or perform transactions.
 
-## 🤝 Contributions
+---
 
-Feel free to fork this project and suggest improvements or fixes. This project is designed as a simple educational tool for understanding structured programming and file handling in C.
+## ✅ Future Improvements
 
-## 📄 License
+- Add password protection or login system
+- Store data in JSON or SQLite for better structure
+- GUI using GTK or web interface
+- Enhanced error handling and validation
 
-This project is released under the MIT License.
+---
 
-```
+## 🪪 License
+
+This project is provided for educational use and is open-source under the MIT License.
+
+---
+
+## 🙋‍♂️ Author
+
+Developed by **Siva Prabhu** (Sibhu) — Embedded Systems Trainer & Developer
