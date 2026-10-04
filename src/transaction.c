@@ -24,7 +24,7 @@ void deposit_money(Customer **customers)
         if (current->account_number == accNo && current->pin == pin)
         {
             found = 1;
-            print_account_details(current);
+            print_account_details(current,0);
             break; // Don't forget to break here
         }
         current = current->next;
@@ -38,18 +38,21 @@ void deposit_money(Customer **customers)
     }
 
     double deposit;
-    printf("Enter The Amount For Deposit: ");
-    scanf("%lf", &deposit);
-
-    if (deposit <= 0)
+    do
     {
-        printf("Error: Deposit amount must be greater than zero.\n");
-        return;
-    }
+        printf("Enter The Amount For Deposit: ");
+        scanf("%lf", &deposit);
+
+        if (deposit <= 0)
+        {
+            printf("Error: Deposit amount must be greater than zero.\n");
+            return;
+        }
+    } while (deposit <= 0);
 
     current->balance += deposit;
 
-    Transaction *newTransaction = (Transaction *)malloc(sizeof(Transaction));
+    Transaction *newTransaction = (Transaction *)calloc(1, sizeof(Transaction));
     if (!newTransaction)
     {
         fprintf(stderr, "Error: Memory allocation failed!\n");
@@ -63,13 +66,13 @@ void deposit_money(Customer **customers)
     newTransaction->balance_after = current->balance;
     newTransaction->next = NULL;
 
-    if (current->transactionHistory == NULL)
+    if (current->history_head == NULL)
     {
-        current->transactionHistory = newTransaction;
+        current->history_head = newTransaction;
     }
     else
     {
-        Transaction *temp = current->transactionHistory;
+        Transaction *temp = current->history_head;
         while (temp->next != NULL)
         {
             temp = temp->next;
@@ -79,9 +82,7 @@ void deposit_money(Customer **customers)
 
     printf("Success: Amount deposited successfully.\n");
     printf("Available balance: %.2lf\n", current->balance);
-    printf("\nPress Any Key to Return Back:");
-    getchar();
-    getchar();
+    pause_screen();
 }
 
 void withdraw_money(Customer **customers)
@@ -108,7 +109,7 @@ void withdraw_money(Customer **customers)
         if (current->account_number == accNo && current->pin == pin)
         {
             found = 1;
-            print_account_details(current);
+            print_account_details(current,0);
             break;
         }
         current = current->next;
@@ -122,23 +123,27 @@ void withdraw_money(Customer **customers)
     }
 
     double withdraw;
-    printf("Enter The Amount For Withdrawal: ");
-    scanf("%lf", &withdraw);
+    do
+    {
+        printf("Enter The Amount For Withdrawal: ");
+        scanf("%lf", &withdraw);
 
-    if (withdraw <= 0)
-    {
-        printf("Error: Withdrawal amount must be greater than zero.\n");
-        return;
-    }
-    if (current->balance < withdraw)
-    {
-        printf("Error: Insufficient funds. Available balance: %.2lf\n", current->balance);
-        return;
-    }
+        if (withdraw <= 0)
+        {
+            printf("Error: Withdrawal amount must be greater than zero.\n");
+            return;
+        }
+        if (current->balance < withdraw)
+        {
+            printf("Error: Insufficient funds. Available balance: %.2lf\n", current->balance);
+            return;
+        }
+
+    } while (withdraw <= 0 || current->balance < withdraw);
 
     current->balance -= withdraw;
 
-    Transaction *newTransaction = (Transaction *)malloc(sizeof(Transaction));
+    Transaction *newTransaction = (Transaction *)calloc(1, sizeof(Transaction));
     if (!newTransaction)
     {
         fprintf(stderr, "Error: Memory allocation failed!\n");
@@ -152,13 +157,13 @@ void withdraw_money(Customer **customers)
     newTransaction->balance_after = current->balance;
     newTransaction->next = NULL;
 
-    if (current->transactionHistory == NULL)
+    if (current->history_head == NULL)
     {
-        current->transactionHistory = newTransaction;
+        current->history_head = newTransaction;
     }
     else
     {
-        Transaction *temp = current->transactionHistory;
+        Transaction *temp = current->history_head;
         while (temp->next != NULL)
         {
             temp = temp->next;
@@ -168,9 +173,7 @@ void withdraw_money(Customer **customers)
 
     printf("Success: Amount withdrawn successfully.\n");
     printf("Available balance: %.2lf\n", current->balance);
-    printf("\nPress Any Key to Return Back:");
-    getchar();
-    getchar();
+    pause_screen();
 }
 
 void transactionHistory(Customer *customers)
@@ -208,11 +211,10 @@ void transactionHistory(Customer *customers)
     }
 
     printf("\nAccount Number: %ld\n", current->account_number);
-    printf("\nAccount Name: %ld\n", current->holder_name);
-    printf("\nAccount Type: %ld\n",  current->type == SAVINGS ? "SAVINGS" : "CURRENT");
+    printf("\nAccount Name: %s\n", current->holder_name);
+    printf("\nAccount Type: %s\n", current->type == SAVINGS ? "SAVINGS" : "CURRENT");
 
-
-    if (!current->transactionHistory)
+    if (!current->history_head)
     {
         printf("No transaction history available.\n");
         return;
@@ -222,7 +224,7 @@ void transactionHistory(Customer *customers)
     printf("%-10s %-12s %-12s %-12s %s\n", "ID", "Type", "Amount", "Balance", "Timestamp");
     printf("--------------------------------------------------------------------------------\n");
 
-    Transaction *temp = current->transactionHistory;
+    Transaction *temp = current->history_head;
     while (temp != NULL)
     {
         char *typeStr;
@@ -248,7 +250,5 @@ void transactionHistory(Customer *customers)
 
         temp = temp->next;
     }
-    printf("\nPress Any Key to Return Back:");
-    getchar();
-    getchar();
+    pause_screen();
 }

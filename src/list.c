@@ -11,12 +11,9 @@ void view_all_account_details(Customer *customers)
 
     while (customers != NULL)
     {
-        print_account_details(customers);
+        print_account_details(customers, 0);
         customers = customers->next;
     }
-
-    printf("Press Any Key to Return Back:");
-    getchar();
 }
 
 void view_account_details(Customer *customers)
@@ -42,7 +39,7 @@ void view_account_details(Customer *customers)
         if (customers->account_number == accNo && customers->pin == pin)
         {
             found = 1;
-            print_account_details(customers);
+            print_account_details(customers, 1);
             break;
         }
         customers = customers->next;
@@ -54,13 +51,10 @@ void view_account_details(Customer *customers)
         sleep(2);
         return;
     }
-
-    printf("Press Any Key to Return Back:");
-    getchar();
-    getchar();
+    pause_screen();
 }
 
-void print_account_details(Customer *customer)
+void print_account_details(Customer *customer, int show_pin)
 {
     char dob_buffer[20];
     char open_buffer[20];
@@ -73,12 +67,19 @@ void print_account_details(Customer *customer)
     printf("| %-20s | %-32s |\n", "Customer Name:", customer->holder_name);
     printf("| %-20s | %-32s |\n", "Account Type:",
            customer->type == SAVINGS ? "SAVINGS" : "CURRENT");
-    printf("| %-20s | $%-31.2f |\n", "Balance:", customer->balance);
+    printf("| %-20s | $%-31.2lf |\n", "Balance:", customer->balance);
     printf("| %-20s | %-32s |\n", "Date of Birth:", dob_buffer);
     printf("| %-20s | %-32s |\n", "Contact Number:", customer->phone_number);
     printf("| %-20s | %-32s |\n", "Email:", customer->email);
     printf("| %-20s | %-32s |\n", "Address:", customer->holder_address);
     printf("| %-20s | %-32s |\n", "Account Opened:", open_buffer);
-    printf("| %-20s | %-32d |\n", "PIN:", customer->pin);
+    if (show_pin)
+    {
+        printf("| %-20s | %-32d |\n", "PIN:", customer->pin);
+    }
+    else
+    {
+        printf("| %-20s | %-32s |\n", "PIN:", "********");
+    }
     printf("+---------------------+------------------------------------+\n");
 }

@@ -1,23 +1,11 @@
 #include "banking.h"
 
-int accountExists(Customer *customers, long int accountNumber)
+int transactionExists(Customer *customers, unsigned long transactionId)
 {
     Customer *current = customers;
     while (current)
     {
-        if (current->account_number == accountNumber)
-            return 1;
-        current = current->next;
-    }
-    return 0;
-}
-
-int transactionExists(Customer *customers, long int transactionId)
-{
-    Customer *current = customers;
-    while (current)
-    {
-        Transaction *trans = current->transactionHistory;
+        Transaction *trans = current->history_head;
         while (trans)
         {
             if (trans->transaction_id == transactionId)
@@ -40,87 +28,63 @@ unsigned long int generate_transactionId(Customer *customers)
         transactionId = (rand() % 9) + 1; // First digit 1-9 (to avoid leading zeros)
         for (int i = 1; i < 10; i++)
             transactionId = transactionId * 10 + (rand() % 10);
-    } while (accountExists(customers, transactionId));
+    } while (transactionExists(customers, transactionId));
 
     return transactionId;
-}
-
-unsigned long int accountGenerate(Customer *customers)
-{
-    srand(time(0));
-    unsigned long int accountNumber;
-    do
-    {
-        accountNumber = 626001;
-        for (int i = 0; i < 10; i++)
-            accountNumber = accountNumber * 10 + (rand() % 10);
-    } while (accountExists(customers, accountNumber));
-
-    return accountNumber;
 }
 
 void create_account(Customer **customers)
 {
     srand(time(0) + rand());
-    Customer *newAccount = (Customer *)malloc(sizeof(Customer));
+    Customer *newAccount = (Customer *)calloc(1, sizeof(Customer));
     if (!newAccount)
     {
         perror("Memory allocation failed");
         exit(EXIT_FAILURE);
     }
 
-    newAccount->account_number = accountGenerate(*customers);
-    newAccount->pin = (rand() % 9000) + 1000;
+    long int accountNumber = 626001;
+    for (int i = 0; i < 10; i++)
+        accountNumber = accountNumber * 10 + (secure_random() % 10);
+
+    newAccount->account_number = accountNumber;
+
+    newAccount->pin = generate_pin(); // was: (rand() % 9000) + 1000
 
     printf("\nCustomer Details::\n");
     printf("Customer Name : ");
     scanf(" %[^\n]", newAccount->holder_name);
+    flush_line();
 
     printf("Customer Address : ");
     scanf(" %[^\n]", newAccount->holder_address);
+    flush_line();
 
     printf("Customer Phone Number : ");
     scanf(" %[^\n]", newAccount->phone_number);
+    flush_line();
 
     printf("Customer Email : ");
     scanf(" %[^\n]", newAccount->email);
+    flush_line();
 
-    char type;
-    printf("Customer Account Type(Savings(S)/Current(C)) : ");
-    scanf(" %c", &type);
-    newAccount->type = type;
-
-    if (type == 'S' || type == 's')
-        newAccount->type = SAVINGS;
-    else if (type == 'C' || type == 'c')
-        newAccount->type = CURRENT;
-    else
-    {
-        printf("Invalid account type. Defaulting to SAVINGS.\n");
-        newAccount->type = SAVINGS;
-    }
+    newAccount->type = read_account_type("Customer Account Type(Savings(S)/Current(C)) : ");
 
     newAccount->balance = 2000;
 
-    char dob_str[11];
-    printf("Customer DOB (DD/MM/YYYY): ");
-    scanf(" %[^\n]", dob_str);
-
-    struct tm tm = {0};
-    strptime(dob_str, "%d/%m/%Y", &tm);
-    newAccount->dob = mktime(&tm);
+    newAccount->dob = read_dob("Customer DOB (DD/MM/YYYY): ");
 
     newAccount->opening_date = time(NULL);
 
-    Transaction *transactionHistory = (Transaction *)malloc(sizeof(Transaction));
-    transactionHistory->transaction_id = generate_transactionId(customers);
+    Transaction *transactionHistory = (Transaction *)calloc(1, sizeof(Transaction));
+    transactionHistory->transaction_id = generate_transactionId(*customers);
     transactionHistory->timestamp = time(NULL);
     transactionHistory->type = DEPOSIT;
     transactionHistory->amount = newAccount->balance;
     transactionHistory->balance_after = newAccount->balance;
     transactionHistory->next = NULL;
 
-    newAccount->transactionHistory = transactionHistory;
+    newAccount->history_head = transactionHistory;
 
     if (!*customers)
     {
@@ -140,5 +104,5 @@ void create_account(Customer **customers)
     system("clear");
 
     printf("Account created successfully!\n");
-    print_account_details(newAccount);
+    print_account_details(newAccount, 1);
 }

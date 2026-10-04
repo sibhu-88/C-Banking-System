@@ -3,23 +3,21 @@
 int main()
 {
     int option;
-    Customer *customers = NULL; 
-
+    Customer *customers = load_account_details();
     do
     {
-       system("clear");
+        system("clear");
 
         printf("\tWelcome to Banking System\n");
         main_menu();
         scanf("%d", &option);
-        getchar();
+        flush_line();
 
         switch (option)
         {
         case 1:
             system("clear");
             create_account(&customers);
-            sleep(2);
             break;
         case 2:
             system("clear");
@@ -47,7 +45,7 @@ int main()
             break;
         case 8:
             system("clear");
-            transactionHistory(customers); 
+            transactionHistory(customers);
             break;
         case 9:
             system("clear");
@@ -60,6 +58,8 @@ int main()
         default:
             printf("Invalid choice! Please try again.\n");
         }
+
+        pause_screen(); /* one place, same behaviour for every option */
     } while (option != 0);
 }
 
@@ -82,7 +82,8 @@ void main_menu(void)
     printf("\n\tEnter your choice: ");
 }
 
-void update_account_menu(void) {
+void update_account_menu(void)
+{
     printf("\n\n\t----------------------------------+\n");
     printf("\t| Update Account Menu             |\n");
     printf("\t|----------------------------------|\n");

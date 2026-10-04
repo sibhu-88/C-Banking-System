@@ -5,7 +5,7 @@ void update_account(Customer **customers)
     if (!*customers)
     {
         fprintf(stderr, "Error: No Records Found!...\n");
-        sleep(2);
+        pause_screen();
         return;
     }
 
@@ -14,9 +14,11 @@ void update_account(Customer **customers)
 
     printf("Enter Customer Account Number: ");
     scanf("%ld", &accNo);
+    flush_line();
 
     printf("Enter Customer PIN: ");
     scanf("%d", &pin);
+    flush_line();
 
     Customer *current = *customers;
     while (current != NULL)
@@ -24,7 +26,7 @@ void update_account(Customer **customers)
         if (current->account_number == accNo && current->pin == pin)
         {
             found = 1;
-            print_account_details(current);
+            print_account_details(current, 0);
             break;
         }
         current = current->next;
@@ -33,7 +35,7 @@ void update_account(Customer **customers)
     if (!found)
     {
         fprintf(stderr, "Error: No Records Found!...\n");
-        sleep(2);
+        pause_screen();
         return;
     }
     else
@@ -43,6 +45,7 @@ void update_account(Customer **customers)
         {
             update_account_menu();
             scanf("%d", &op);
+            flush_line();
 
             switch (op)
             {
@@ -67,39 +70,14 @@ void update_account(Customer **customers)
                 printf("Success: Customer email updated.\n");
                 break;
             case 5:
-            {
-                char dob_str[11];
-                printf("Customer DOB (DD/MM/YYYY): ");
-                scanf(" %[^\n]", dob_str);
-
-                struct tm tm = {0};
-                strptime(dob_str, "%d/%m/%Y", &tm);
-                current->dob = mktime(&tm);
+                current->dob = read_dob("Customer DOB (DD/MM/YYYY): ");
                 printf("Success: Customer date of birth updated.\n");
                 break;
-            }
             case 6:
-            {
-                char type;
-                printf("Customer Account Type (Savings(S)/Current(C)): ");
-                scanf(" %c", &type);
-                if (type == 'S' || type == 's')
-                {
-                    current->type = SAVINGS;
-                    printf("Success: Customer account type updated to SAVINGS.\n");
-                }
-                else if (type == 'C' || type == 'c')
-                {
-                    current->type = CURRENT;
-                    printf("Success: Customer account type updated to CURRENT.\n");
-                }
-                else
-                {
-                    printf("Invalid account type. Defaulting to SAVINGS.\n");
-                    current->type = SAVINGS;
-                }
+                current->type = read_account_type("Customer Account Type (Savings(S)/Current(C)): ");
+                printf("Success: Customer account type updated to %s.\n",
+                       current->type == SAVINGS ? "SAVINGS" : "CURRENT");
                 break;
-            }
             case 0:
                 printf("\n\tBack to main menu.......!\n");
                 break;
@@ -115,7 +93,7 @@ void delete_account(Customer **customers)
     if (!*customers)
     {
         fprintf(stderr, "Error: No Records Found!...\n");
-        sleep(2);
+        pause_screen();
         return;
     }
 
@@ -124,9 +102,11 @@ void delete_account(Customer **customers)
 
     printf("Enter Customer Account Number: ");
     scanf("%ld", &accNo);
+    flush_line();
 
     printf("Enter Customer PIN: ");
     scanf("%d", &pin);
+    flush_line();
 
     Customer *current = *customers;
     Customer *prev = NULL;
@@ -136,7 +116,7 @@ void delete_account(Customer **customers)
         if (current->account_number == accNo && current->pin == pin)
         {
             found = 1;
-            print_account_details(current);
+            print_account_details(current, 0);
             break;
         }
         prev = current;
@@ -146,7 +126,7 @@ void delete_account(Customer **customers)
     if (!found)
     {
         fprintf(stderr, "Error: No Records Found!...\n");
-        sleep(2);
+        pause_screen();
         return;
     }
     else
@@ -154,6 +134,7 @@ void delete_account(Customer **customers)
         char op;
         printf("Are you sure you want to delete your account (Y/N)? ");
         scanf(" %c", &op);
+        flush_line();
 
         if (tolower(op) == 'y')
         {
@@ -165,6 +146,7 @@ void delete_account(Customer **customers)
             {
                 prev->next = current->next;
             }
+            free(current->history_head);  // Free the transaction history
             free(current);
             printf("Success: Account deleted successfully.\n");
         }

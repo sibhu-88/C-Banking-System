@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = -Iinclude
-LDFLAGS = 
+LDFLAGS = -lxlsxwriter -lz
 
 # Source files
 SRCS = $(wildcard src/*.c)
