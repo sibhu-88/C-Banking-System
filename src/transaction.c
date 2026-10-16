@@ -176,7 +176,7 @@ void withdraw_money(Customer **customers)
     pause_screen();
 }
 
-void transactionHistory(Customer *customers)
+void view_transaction_history(Customer *customers)
 {
     if (!customers)
     {

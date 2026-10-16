@@ -45,11 +45,11 @@ int main()
             break;
         case 8:
             system("clear");
-            transactionHistory(customers);
+            view_transaction_history(customers);
             break;
         case 9:
             system("clear");
-            save_account_details(customers);
+            save_data_file(customers);
             break;
         case 0:
             printf("Exiting the program...\n");
